@@ -20,6 +20,7 @@ AND R7, R7, #0;     Initalize our counter register
 
 CountLoop;          Count total entries in array
     LDR R2, R0, #0
+    AND R2, R2, R6
     BRz CountStop
     ADD R7, R7, #1
     ADD R0, R0, #1
@@ -31,17 +32,20 @@ LD R0, NUM1;        Reload R0 with x4000
 LoopStart 
     LD R6, MASK
     LDR R2, R0, #0; Load values
+    AND R2, R2, R6
     BRz ReturnToStart
     BRp Continue2
     LD R5, MASK2
     AND R2, R5, R2
 Continue
     LDR R3, R1, #0
+    AND R3, R6, R3
     BRz ReturnToStart
     BRp Switch
     AND R3, R5, R3
 Continue2
     LDR R3, R1, #0
+    AND R3, R6, R3
     BRz ReturnToStart
     BRp Continue3
     AND R3, R5, R3
