@@ -158,15 +158,15 @@ BRnzp Duplicate
 AND R7, R7, #0
 LD R6, S
 LD R5, #-25
-Subtract25
+
 LD R0, DST
+Subtract25
 LDR R1, R0, #0
 BRz STOPSub25
 ADD R2, R1, R5
 ADD R0, R0, #1
 BRp Subtract25
 ADD R7, R7, #1
-STR R1, R0, #0
 BRnzp Subtract25
 STOPSub25
 STR R7, R6, #0
@@ -174,14 +174,13 @@ STR R7, R6, #0
 AND R7, R7, #0
 LD R6, M
 LD R5, #-50
-Subtract50
 LD R0, DST
+Subtract50
 LDR R1, R0, #0
 BRz STOPSub50
 ADD R2, R1, R5
 ADD R0, R0, #1
 BRp Subtract50
-STR R1, R0, #0
 ADD R7, R7, #1
 BRnzp Subtract50
 STOPSub50
@@ -190,14 +189,13 @@ STR R7, R6, #0
 AND R7, R7, #0
 LD R6, L
 LD R5, #-100
-Subtract100
 LD R0, DST
+Subtract100
 LDR R1, R0, #0
 BRz STOPSub100
 ADD R2, R1, R5
 ADD R0, R0, #1
 BRp Subtract100
-STR R1, R0, #0
 ADD R7, R7, #1
 BRnzp Subtract100
 STOPSub100
@@ -206,14 +204,13 @@ STR R7, R6, #0
 AND R7, R7, #0
 LD R6, H
 LD R5, #-101
-Subtract101
 LD R0, DST
+Subtract101
 LDR R1, R0, #0
 BRz STOPSub101
 ADD R2, R1, R5
 ADD R0, R0, #1
 BRp Subtract101
-STR R1, R0, #0
 ADD R7, R7, #1
 BRnzp Subtract101
 STOPSub101
