@@ -28,7 +28,7 @@ LDR R3, R1, #0
 LD R6, MASK;        Load R6 with mask to start isolating bits [15:8]
 
 AND R2, R2, R6;     Isolate bits [15:8] of the first number
-BRz ENDProgram;     If the first value is the terminator, end the program
+BRz MEANAlg;     If the first value is the terminator, end the program
 AND R3, R3, R6;     Otherwise, isolate bits [15:8] of the second number
 
 AND R7, R7, #0;     Initalize our counter register
@@ -86,7 +86,7 @@ BRnp LoopStart;     Start Loop again
 ; End of Bubble Sourt Algorithm
 
 ; Mean Algorithm
-LD R0, NUM1
+MEANAlg LD R0, NUM1
 LD R2, MEAN
 LD R6, MASK
 LDR R1, R0, #0
@@ -113,16 +113,17 @@ DivideLoop
     BRnz DivideStop
     ADD R3, R5, R3
     BRnzp DivideLoop
+DivideStop
 STR R6, R2, #0
+BRnzp RANGEAlg
 ZERO2
 ADD R1, R1, #-1
 STR R1, R2, #0
-DivideStop
 ; End of Mean Algorthm
 
-; Range Algorithm
+; Range Algorithm FIX!!!!!!!!!!!!!!!!!!!!!!
 ; Store Lowest Number
-LD R0, NUM1
+RANGEAlg LD R0, NUM1
 LD R6, MASK
 LD R2, RNG
 LDR R1, R0, #0
@@ -138,16 +139,18 @@ Count
     BRnzp Count;Start again
 Load0
 LDR R3, R2, #0
-LDR R1, R0, #-1
+ADD R0, R0, #-1
+LDR R1, R0, #0
 ; Left shift R1 by 8 bits
-ADD R7, R7, #-7; Initialize counter register
+AND R7, R7, #0
+ADD R7, R7, #-8; Initialize counter register
 ShiftLoop
     ADD R1, R1, R1
     ADD R7, R7, #1
-    BRnz ShiftLoop
+    BRn ShiftLoop
 ADD R1, R1, R3
 STR R1, R2, #0
-BRp TABLE
+BRnp TABLE
 ZERO
 ADD R1, R1, #-1
 STR R1, R2, #0
