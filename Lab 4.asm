@@ -140,14 +140,84 @@ STR R1, R2, #0
 ; End of Range Algorithm
 
 ; Table Algoritm (NEED TO FINISH)
-TABLE ; Duplicate the array
-; Subtract 25 from each value, if positive, then ignore
-; If zero or negative, increment a counter, then set memory value to zero
-; Store counter value at correct memory location for table
-; Repeat for 50, 100
-; Then count remaining non-zero value using counter with BRz to jump over incrementing it
+TABLE 
+; Duplicate the array
+LD R0, NUM1
+LD R1, DST
+LD R3, MASK
+Duplicate
+LDR R2, R0, #0
+BRz Subtract25
+AND R2, R2, R3
+STR R2, R1, #0
+ADD R0, R0, #1
+ADD R1, R1, #1
+BRnzp Duplicate
 
-;
+; Subtract 25 from each value, increment a counter. If positive, ignore. Otherwise, store original value to memory
+AND R7, R7, #0
+LD R6, S
+LD R5, #-25
+Subtract25
+LD R0, DST
+LDR R1, R0, #0
+BRz STOPSub25
+ADD R2, R1, R5
+ADD R0, R0, #1
+BRp Subtract25
+ADD R7, R7, #1
+STR R1, R0, #0
+BRnzp Subtract25
+STOPSub25
+STR R7, R6, #0
+
+AND R7, R7, #0
+LD R6, M
+LD R5, #-50
+Subtract50
+LD R0, DST
+LDR R1, R0, #0
+BRz STOPSub50
+ADD R2, R1, R5
+ADD R0, R0, #1
+BRp Subtract50
+STR R1, R0, #0
+ADD R7, R7, #1
+BRnzp Subtract50
+STOPSub50
+STR R7, R6, #0
+
+AND R7, R7, #0
+LD R6, L
+LD R5, #-100
+Subtract100
+LD R0, DST
+LDR R1, R0, #0
+BRz STOPSub100
+ADD R2, R1, R5
+ADD R0, R0, #1
+BRp Subtract100
+STR R1, R0, #0
+ADD R7, R7, #1
+BRnzp Subtract100
+STOPSub100
+STR R7, R6, #0
+
+AND R7, R7, #0
+LD R6, H
+LD R5, #-101
+Subtract101
+LD R0, DST
+LDR R1, R0, #0
+BRz STOPSub101
+ADD R2, R1, R5
+ADD R0, R0, #1
+BRp Subtract101
+STR R1, R0, #0
+ADD R7, R7, #1
+BRnzp Subtract101
+STOPSub101
+STR R7, R6, #0
 
 ENDProgram HALT
 
@@ -162,5 +232,6 @@ S    .FILL x5300;   ASCII codes for S, M, L, H
 M    .FILL x4D00
 L    .FILL x4C00
 H    .FILL x4800
+DST  .FILL x3500
 
 .END
