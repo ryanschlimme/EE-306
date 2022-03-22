@@ -16,23 +16,16 @@ LD R0, NUM1;        Load R0/R1 with first two values
 LD R1, NUM2
 LDR R2, R0, #0
 LDR R3, R1, #0
-LD R6, MASK;        Load R6 with mask to start isolating bits [15:8]
+LD R6, MASK3;        Load R6 with mask to start isolating bits [15:8]
 AND R2, R2, R6;     Isolate bits [15:8] of the first number
-AND R3, R3, R6;     Isolate bits [15:8] of the second number
+BRz MEANAlg
 AND R7, R7, #0;     Initalize our counter register
 ; Count total entries in array
 LD R0, NUM1;        Load R0/R1 with first two values
 LD R1, NUM2
 LDR R2, R0, #0
 LDR R3, R1, #0
-LD R6, MASK;        Load R6 with mask to start isolating bits [15:8]
-
-AND R2, R2, R6;     Isolate bits [15:8] of the first number
-BRz MEANAlg;     If the first value is the terminator, end the program
-AND R3, R3, R6;     Otherwise, isolate bits [15:8] of the second number
-
 AND R7, R7, #0;     Initalize our counter register
-
 CountLoop;          Count total entries in array
     LDR R2, R0, #0; Load entry
     AND R2, R2, R6; Check if entry is terminator
@@ -45,26 +38,18 @@ CountStop
 LD R0, NUM1;        Reload R0 with x4000
 
 LoopStart 
-    LD R6, MASK;    Load mask
+    LD R6, MASK3;    Load mask
     LDR R2, R0, #0; Load value 1
     AND R2, R2, R6; Isolate bits [15:8]
     BRz ReturnToStart; If zero, return to start
-    BRp Continue2;  If positive continue
-    LD R5, MASK2;   If negative, load mask to remove bit 15
-    AND R2, R5, R2; Remove bit 15
-Continue
+    LD R5, MASK;   Otherwise, load mask
+    LDR R2, R0, #0
+    AND R2, R5, R2
     LDR R3, R1, #0; Load value 2
     AND R3, R6, R3
     BRz ReturnToStart
-    BRp Switch;     If first entry negative and second positive, switch numbers, first must be larger unsigned
+    LDR R3, R1, #0
     AND R3, R5, R3
-Continue2
-    LDR R3, R1, #0; Load value 2
-    AND R3, R6, R3
-    BRz ReturnToStart
-    BRp Continue3;  If both positive proceed to compare
-    AND R3, R5, R3
-Continue3
     NOT R4, R3;     Value 2 - Value 1
     ADD R4, R4, #1
     ADD R5, R4, R2
@@ -85,20 +70,23 @@ ADD R7, R7, #-1;    Decrement R7
 BRnp LoopStart;     Start Loop again
 ; End of Bubble Sourt Algorithm
 
-; Mean Algorithm
+; Mean Algorithm CREATING ALL ZERO'S!!!!!!!!!!!!!!!!
 MEANAlg LD R0, NUM1
 LD R2, MEAN
 LD R6, MASK
+LD R5, MASK3
 LDR R1, R0, #0
-AND R1, R1, R6
+AND R1, R1, R5
 BRz ZERO2
 AND R7, R7, #0
 AND R3, R3, #0
 Count2
     LDR R1, R0, #0;   Load entry
-    AND R1, R1, R6;   Check if entry is terminator
+    AND R1, R1, R5;   Check if entry is terminator
     BRz Stop2;   If zero, stop counting
     ADD R7, R7, #1;   If not, increment counter
+    LDR R1, R0, #0
+    AND R1, R6, R1;     
     ADD R0, R0, #1;   Increment pointer
     ADD R3, R1, R3;   Add number to final value
     BRnzp Count2; Start again
@@ -117,18 +105,22 @@ DivideStop
 STR R6, R2, #0
 BRnzp RANGEAlg
 ZERO2
+AND R1, R1, #0
 ADD R1, R1, #-1
 STR R1, R2, #0
 ; End of Mean Algorthm
 
-; Range Algorithm FIX!!!!!!!!!!!!!!!!!!!!!!
+; Range Algorithm
 ; Store Lowest Number
 RANGEAlg LD R0, NUM1
-LD R6, MASK
+LD R6, MASK3
+LD R5, MASK
 LD R2, RNG
 LDR R1, R0, #0
 AND R1, R1, R6
 BRz ZERO
+LDR R1, R0, #0
+AND R1, R1, R5
 STR R1, R2, #0
 ; Store Largest Number
 Count
@@ -141,6 +133,7 @@ Load0
 LDR R3, R2, #0
 ADD R0, R0, #-1
 LDR R1, R0, #0
+AND R1, R1, R5
 ; Left shift R1 by 8 bits
 AND R7, R7, #0
 ADD R7, R7, #-8; Initialize counter register
@@ -156,23 +149,29 @@ ADD R1, R1, #-1
 STR R1, R2, #0
 ; End of Range Algorithm
 
-; Table Algoritm (NEED TO FINISH)
+; Table Algoritm
 TABLE 
 ; Duplicate the array
 LD R0, NUM1
 LD R1, DST
 LD R3, MASK
+LD R4, MASK3
 Duplicate
 LDR R2, R0, #0
+AND R2, R2, R4
 BRz NEXT
+LDR R2, R0, #0
 AND R2, R2, R3
 STR R2, R1, #0
 ADD R0, R0, #1
 ADD R1, R1, #1
 BRnzp Duplicate
+NEXT
+AND R2, R2, R3
+STR R2, R1, #0
 
 ; Subtract 25 from each value, increment a counter. If positive, ignore. Otherwise, store original value to memory
-NEXT
+
 AND R4, R4, #0
 AND R5, R5, #0
 AND R6, R6, #0
@@ -234,9 +233,8 @@ ENDProgram HALT
 NUM1 .FILL x4000;   Memory location of first number
 NUM2 .FILL x4001;   Memory location of first number to compare
 MASK .FILL x00FF;   Bit mask to isolate bits [7:0]
-
 MASK2 .FILL x7FFF
-MASK3 .FILL xFF00
+MASK3 .FILL xFF00;  Bit mask to check for sentinel
 
 VAL  .FILL x5000;   
 RNG  .FILL x5004;   Memory location of range
