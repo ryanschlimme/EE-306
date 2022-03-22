@@ -104,10 +104,27 @@ DivideLoop
 DivideStop
 STR R6, R2, #0
 BRnzp RANGEAlg
+
 ZERO2
 AND R1, R1, #0
 ADD R1, R1, #-1
 STR R1, R2, #0
+LD R2, RNG
+STR R1, R2, #0
+LD R0, VAL
+LD R1, S
+STR R1, R0, #0
+ADD R0, R0, #1
+LD R1, M
+STR R1, R0, #0
+ADD R0, R0, #1
+LD R1, L
+STR R1, R0, #0
+ADD R0, R0, #1
+LD R1, H
+STR R1, R0, #0
+BRnzp ENDProgram
+
 ; End of Mean Algorthm
 
 ; Range Algorithm
@@ -116,9 +133,6 @@ RANGEAlg LD R0, NUM1
 LD R6, MASK3
 LD R5, MASK
 LD R2, RNG
-LDR R1, R0, #0
-AND R1, R1, R6
-BRz ZERO
 LDR R1, R0, #0
 AND R1, R1, R5
 STR R1, R2, #0
@@ -144,9 +158,6 @@ ShiftLoop
 ADD R1, R1, R3
 STR R1, R2, #0
 BRnp TABLE
-ZERO
-ADD R1, R1, #-1
-STR R1, R2, #0
 ; End of Range Algorithm
 
 ; Table Algoritm
