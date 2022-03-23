@@ -3,7 +3,7 @@
 
 ; Lab 4
 
-; This program takes an array of unsigned integer data starting at M[x4000] and organizes it in ascending order by bits  [7:0] while carrying 
+; This program takes an array of unsigned integer data starting at M[x4000] and organizes it in ascending order by bits [7:0] while carrying 
 ; data from bits [15:8]. Then, it will calculate the mean of bits [7:0] of the elements in the array and store the in M[x5005]. Then, it will
 ; calculate the range and store it in M[x5004] where [15:8] represents the highest value and [7:0] the lowest value. Next, it will produce a 
 ; table representing the number of values [7:0] which are 0-25, 26-50, 51-100, and >100, in consecutive memory locations starting at x5000. 
@@ -16,10 +16,10 @@ LD R0, NUM1;        Load R0/R1 with first two values
 LD R1, NUM2
 LDR R2, R0, #0
 LDR R3, R1, #0
-LD R6, MASK3;        Load R6 with mask to start isolating bits [15:8]
+LD R6, MASK3;       Load R6 with mask to start isolating bits [15:8]
 AND R2, R2, R6;     Isolate bits [15:8] of the first number
 BRz MEANAlg
-AND R7, R7, #0;     Initalize our counter register
+AND R7, R7, #0;     Initialize our counter register
 ; Count total entries in array
 LD R0, NUM1;        Load R0/R1 with first two values
 LD R1, NUM2
