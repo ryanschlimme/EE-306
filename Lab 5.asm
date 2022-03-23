@@ -32,6 +32,7 @@ STR R2, R1, #0
 
 ; Search/Compare Algorithm ------ POINTERS ARE FIRST ELEMENT, NEED TO REWORK CODE!!!!!!!!!!
 LD R0, DATA;    Load data value pointer
+ADD R0, R0, #1
 LEA R2, CODE;    Load desired value pointer
 LD R5, MASK
 StartSearch
@@ -48,8 +49,8 @@ ADD R4, R1, R3
 BRz Continue;   If zero, continue
 
 NotThisOne;     If not a match, continue to pointer and check next value
-ADD R0, R0, #1
-LDR R1, R0, #1
+ADD R0, R0, #-1
+LDR R1, R0, #0
 AND R1, R1, R5
 BRnp POINTER
 BRz NotThisOne
