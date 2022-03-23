@@ -70,7 +70,7 @@ ADD R7, R7, #-1;    Decrement R7
 BRnp LoopStart;     Start Loop again
 ; End of Bubble Sourt Algorithm
 
-; Mean Algorithm CREATING ALL ZERO'S!!!!!!!!!!!!!!!!
+;Mean Algorithm
 MEANAlg LD R0, NUM1
 LD R2, MEAN
 LD R6, MASK
@@ -124,7 +124,6 @@ ADD R0, R0, #1
 LD R1, H
 STR R1, R0, #0
 BRnzp ENDProgram
-
 ; End of Mean Algorthm
 
 ; Range Algorithm
@@ -182,14 +181,12 @@ AND R2, R2, R3
 STR R2, R1, #0
 
 ; Subtract 25 from each value, increment a counter. If positive, ignore. Otherwise, store original value to memory
-
 AND R4, R4, #0
 AND R5, R5, #0
 AND R6, R6, #0
 AND R3, R3, #0
 
 LD R0, DST
-
 CompareStart
     LDR R1, R0, #0
     BRz STOPCompare
