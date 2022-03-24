@@ -31,32 +31,38 @@ STR R2, R1, #0
 ; End of Prompt Algorithm
 
 ; Search/Compare Algorithm ------ POINTERS ARE FIRST ELEMENT, NEED TO REWORK CODE!!!!!!!!!!
-SearchStart
-LD R0, DATA; Load node address
-ADD R0, R0, #1; Load data addess
-LDR R2, R0, #0; Load first character
-LDR R3, R2, #0; Load value of R2 giving access violation
-LD R1, CODE; Load first value of course code
-LDR R4, R1, #0
-NOT R4, R4
-ADD R5, R4, #1
-ADD R5, R5, R3
-BRnp NotMatch
-ADD R3, R3, #1
-ADD R1, R1, #1
-BRnzp SearchStart
-
-NotMatch
-ADD R0, R0, #-1
-LDR R0, R0, #0
-BRnp SearchStart
+LD R0, DATA;    Load data value pointer
+LEA R2, CODE;   Load desired value pointer
+LD R5, MASK
+StartSearch
+LDR R1, R0, #0
 BRz NoMatch
+AND R1, R1, R5
+BRnp POINTER;   If the value has nonzero bits in [15:8], it is a pointer
+LDR R1, R0, #0; Reload data value
+LDR R3, R2, #0
+BRz Match
+NOT R3, R3;     Subtract from data value
+ADD R3, R3, #1
+ADD R4, R1, R3
+BRz Continue;   If zero, continue
 
+NotThisOne;     If not a match, continue to pointer and check next value
+ADD R0, R0, #1
+LDR R1, R0, #1
+AND R1, R1, R5
+BRnp POINTER
+BRz NotThisOne
+
+Continue 
+ADD R0, R0, #1; Increment DATA and CODE pointers
+ADD R2, R2, #1
+BRnzp StartSearch;  Continue to compare
 ; If zero, continue. Otherwise, go to next item in list
 POINTER 
 LDR R1, R0, #0; Reload pointer value
 LDR R0, R1, #0; Load next value
-BRnp SearchStart
+BRnp StartSearch
 BRz NoMatch;    If zero, it is the sentinel and there is no match
 ; End of Search/Compare Algorithm
 
