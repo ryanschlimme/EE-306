@@ -30,40 +30,37 @@ ADD R1, R1, #-1
 STR R2, R1, #0
 ; End of Prompt Algorithm
 
-; Search/Compare Algorithm ------ POINTERS ARE FIRST ELEMENT, NEED TO REWORK CODE!!!!!!!!!!
-LD R0, DATA;    Load data value pointer
-LEA R2, CODE;   Load desired value pointer
-LD R5, MASK
-StartSearch
+; Search/Compare Algorithm
+LD R0, DATA
 LDR R1, R0, #0
-BRz NoMatch
-AND R1, R1, R5
-BRnp POINTER;   If the value has nonzero bits in [15:8], it is a pointer
-LDR R1, R0, #0; Reload data value
-LDR R3, R2, #0
-BRz Match
-NOT R3, R3;     Subtract from data value
-ADD R3, R3, #1
-ADD R4, R1, R3
-BRz Continue;   If zero, continue
-
-NotThisOne;     If not a match, continue to pointer and check next value
+LDR R0, R1, #0
+LEA R4, CODE
+BRnzp NextNode
+Loop1
+LDR R1, R0, #0
 ADD R0, R0, #1
-LDR R1, R0, #1
-AND R1, R1, R5
-BRnp POINTER
-BRz NotThisOne
-
-Continue 
-ADD R0, R0, #1; Increment DATA and CODE pointers
+LDR R2, R0, #0
+BRz NextNode
+CompareLoop
+LDR R3, R2, #0
+LDR R5, R4, #0
+BRz Match
+NOT R5, R5
+ADD R5, R5, #1
+ADD R3, R3, R5
+BRnp NextNode
+ADD R4, R4, #1
 ADD R2, R2, #1
-BRnzp StartSearch;  Continue to compare
-; If zero, continue. Otherwise, go to next item in list
-POINTER 
-LDR R1, R0, #0; Reload pointer value
-LDR R0, R1, #0; Load next value
-BRnp StartSearch
-BRz NoMatch;    If zero, it is the sentinel and there is no match
+BRnzp CompareLoop
+Next
+ADD R0, R0, #1
+ADD R4, R4, #1
+BRnzp Loop1
+NextNode
+ADD R0, R1, #0
+ADD R0, R0, #0
+BRnp Loop1
+BRz NoMatch
 ; End of Search/Compare Algorithm
 
 ; Response Algorithm
@@ -73,6 +70,7 @@ LEA R0, CODE
 PUTS
 LEA R0, YesResponse
 PUTS
+BRnzp EndProgram
 ; If there isn't a match
 NoMatch
 LEA R0, CODE
@@ -81,15 +79,14 @@ LEA R0, NoResponse
 PUTS
 ; End of Response Algorithm
 
-HALT
+EndProgram HALT
 
 MASK .FILL xFF00
 DATA .FILL x4000
 ENTER .FILL x0A
-CODE .BLKW #8
 Prompt .STRINGZ "Type Course Number and press Enter:"
 YesResponse .STRINGZ " is offered this semester!"
 NoResponse .STRINGZ " is not offered this semester."
-
+CODE .BLKW #8
 
 .END
