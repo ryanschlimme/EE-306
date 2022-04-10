@@ -40,8 +40,7 @@ LEA R4, CODE
 BRnzp NextNode
 Loop1
 LDR R1, R0, #0
-ADD R0, R0, #1
-LDR R2, R0, #0
+LDR R2, R0, #1
 BRz NextNode
 CompareLoop
 LDR R5, R4, #0
@@ -67,6 +66,7 @@ BRnp Loop1
 
 ; Search/Compare Algorithm 2
 NoMatch
+AND R6, R6, #0; Initialize a counter register
 LD R0, DATA
 ADD R0, R0, #1; Increment to course catalog list
 LDR R1, R0, #0
@@ -96,6 +96,8 @@ BRnzp Loop2
 NextNode2
 LEA R4, CODE
 ADD R0, R1, #0
+ST R0, PTR1
+ADD R6, R6, #1
 ADD R0, R0, #0
 BRnp Loop2
 BRz NoMatch2
@@ -104,6 +106,8 @@ BRz NoMatch2
 ; Response Algorithm
 ; If there is a match in search 1
 Match 
+ADD R5, R5, #0
+BRnp NoMatch
 LEA R0, CODE
 PUTS
 LEA R0, YesResponse
@@ -111,10 +115,45 @@ PUTS
 BRnzp EndProgram
 ; If there is a match in search 2
 Match2
-; Remove node from 2nd list and add to 1st list
-;   Update 1st list head pointer to point to node
-;   Update nodes tail pointer to point to old 1st list head
-;   Update 2nd list n-1 pointer to point to n+1
+; NEED TO FIX x4001 to point to next node of the 2nd list!!!!!!!!!!!!!!!!!!!!!!!
+
+; Change n-1 pointer to n+1
+LDI R0, DATA
+AND R7, R7, #0
+ADD R7, R6, #0
+ADD R6, R6, #2
+TRAVERSE BRz DONE ; Traverse to n+1 node
+LDR R0, R0, #0
+ADD R6, R6, #-1
+BRnzp TRAVERSE
+DONE ST R0, NODEAdr; Store pointer of n+1 node
+
+ADD R7, R7, #-1; Check to see if node deleted is 1st node of 2nd list
+BRz Store0
+
+ADD R7, R7, #1; If not, return R7 to original value
+LDI R0, DATA
+TRAVERSE2 BRz DONE2; Traverse to n-1 node
+LDR R0, R0, #0
+ADD R7, R7, #-1
+BRnzp TRAVERSE2
+DONE2 LD R2, NODEAdr; Store n+1 pointer to 2nd list pointer
+STR R0, R2, #0
+
+Store0; Store NodeAdr to 2nd list pointer
+LD R0, DATA
+LD R1, NodeAdr
+STR R1, R0, #1
+
+LD R6, DATA;    Update 1st list head pointer to point to node
+LDR R6, R6, #0
+ST R6, OldPTR1
+LD R7, PTR1
+LD R6, DATA
+STR R7, R6, #0
+LD R6, OldPTR1; Update nodes tail pointer to point to old 1st list head
+LD R7, PTR1
+STR R6, R7, #0
 
 LEA R0, CODE
 PUTS
@@ -132,7 +171,9 @@ EndProgram HALT
 
 MASK .FILL xFF00
 DATA .FILL x4000
-NewNode .FILL xFE00
+PTR1 .FILL x0000
+OldPTR1 .FILL x0000
+NodeAdr .FILL x0000
 CODE .BLKW #8
 Prompt .STRINGZ "Type Course Number and press Enter: "
 YesResponse .STRINGZ " is already being offered this semester."
