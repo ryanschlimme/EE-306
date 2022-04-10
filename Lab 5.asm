@@ -43,8 +43,8 @@ ADD R0, R0, #1
 LDR R2, R0, #0
 BRz NextNode
 CompareLoop
-LDR R3, R2, #0
 LDR R5, R4, #0
+LDR R3, R2, #0
 BRz Match
 NOT R5, R5
 ADD R5, R5, #1
