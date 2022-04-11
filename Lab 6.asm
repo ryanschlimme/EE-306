@@ -121,7 +121,7 @@ Match2
 LDI R0, DATA
 AND R7, R7, #0
 ADD R7, R6, #0
-ADD R6, R6, #2
+ADD R6, R6, #1
 TRAVERSE BRz DONE ; Traverse to n+1 node
 LDR R0, R0, #0
 ADD R6, R6, #-1
@@ -131,7 +131,6 @@ DONE ST R0, NODEAdr; Store pointer of n+1 node
 ADD R7, R7, #-1; Check to see if node deleted is 1st node of 2nd list
 BRz Store0
 
-ADD R7, R7, #1; If not, return R7 to original value
 LDI R0, DATA
 TRAVERSE2 BRz DONE2; Traverse to n-1 node
 LDR R0, R0, #0
