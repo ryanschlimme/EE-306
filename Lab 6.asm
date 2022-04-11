@@ -115,7 +115,6 @@ PUTS
 BRnzp EndProgram
 ; If there is a match in search 2
 Match2
-; NEED TO FIX x4001 to point to next node of the 2nd list!!!!!!!!!!!!!!!!!!!!!!!
 
 ; Change n-1 pointer to n+1
 LDI R0, NextDATA
