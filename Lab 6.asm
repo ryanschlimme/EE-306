@@ -118,10 +118,9 @@ Match2
 ; NEED TO FIX x4001 to point to next node of the 2nd list!!!!!!!!!!!!!!!!!!!!!!!
 
 ; Change n-1 pointer to n+1
-LDI R0, DATA
+LDI R0, NextDATA
 AND R7, R7, #0
 ADD R7, R6, #0
-ADD R6, R6, #1
 TRAVERSE BRz DONE ; Traverse to n+1 node
 LDR R0, R0, #0
 ADD R6, R6, #-1
@@ -131,7 +130,7 @@ DONE ST R0, NODEAdr; Store pointer of n+1 node
 ADD R7, R7, #-1; Check to see if node deleted is 1st node of 2nd list
 BRz Store0
 
-LDI R0, DATA
+LDI R0, NextDATA
 TRAVERSE2 BRz DONE2; Traverse to n-1 node
 LDR R0, R0, #0
 ADD R7, R7, #-1
@@ -140,9 +139,9 @@ DONE2 LD R2, NODEAdr; Store n+1 pointer to 2nd list pointer
 STR R0, R2, #0
 
 Store0; Store NodeAdr to 2nd list pointer
-LD R0, DATA
+LD R0, NextDATA
 LD R1, NodeAdr
-STR R1, R0, #1
+STR R1, R0, #0
 
 LD R6, DATA;    Update 1st list head pointer to point to node
 LDR R6, R6, #0
@@ -170,6 +169,7 @@ EndProgram HALT
 
 MASK .FILL xFF00
 DATA .FILL x4000
+NextData .FILL x4001
 PTR1 .FILL x0000
 OldPTR1 .FILL x0000
 NodeAdr .FILL x0000
